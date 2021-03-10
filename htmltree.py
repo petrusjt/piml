@@ -66,7 +66,7 @@ class HTMLTree:
             elif attribute[0] == "#":
                 self.html += f'id="{attribute[1:]}" '
             else:
-                self.html += attribute
+                self.html += attribute + " "
         self.html += f">{new_line}"
 
         # After the attributes it goes over all the children of a given node
