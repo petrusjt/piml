@@ -1,0 +1,24 @@
+html:
+    head:
+        title: 
+            Test
+        link rel="stylesheet" href="style.css":
+        script type="text/javascript" src="script.js":
+    body:
+        p .red style="color: red": 
+            This should be a red text.
+        Filler.
+        div .test-class #test-id style="border: 1px solid black":
+            Filler.
+            b:
+                Filler
+            Filler.
+            div:
+                Filler\:
+                i .blue style="color: blue":
+                    ul:
+                        li:
+                            Should be blue.
+                        li style="color: green": 
+                            Should be green.
+        Filler
