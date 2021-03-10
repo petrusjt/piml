@@ -1,11 +1,12 @@
-# PTML
+# PIML
 
+## Description
 Converts a python-like indented text to html.
 
 ## Usage
 
 ```bash
-py ptml.py <input_file> [output_file]
+py piml.py <input_file> [output_file]
 ```
 Files must be given with extensions.
 
@@ -17,4 +18,4 @@ Indentation must be done with spaces.
 
 ## Example
 
-The `test.ptml` file is an example input file with `test.html` as the output.
+The `test.piml` file is an example input file with `test.html` as the output.
