@@ -48,13 +48,18 @@ class HTMLTree:
     Returns str object with the html code
     """
     def create_html(self):
-        self._traverse_tree(self.root.children[0])
+        self.hmtl = ""
+        self._traverse_tree(self.root.children[0]) # not self.root, because self.root is an empty HTMLNode
         return self.html
 
-    def _traverse_tree(self, node, depth=0):
+    def _traverse_tree(self, node, depth=0): # depth is needed for proper indentation
+        # These are needed because python complained about escape sequences in interpolated strings
         new_line = "\n"
         tab = "\t"
+
+        # first it creates the html tag
         self.html += f"{depth*tab}<{node.tag}{' ' if len(node.attributes) > 0 else ''}"
+        # then adds all the attributes to it
         for attribute in node.attributes:
             if attribute[0] == ".":
                 self.html += f'class="{attribute[1:]}" '
@@ -64,12 +69,15 @@ class HTMLTree:
                 self.html += attribute
         self.html += f">{new_line}"
 
+        # After the attributes it goes over all the children of a given node
         for child in node.children:
+            # if the child is not a tag, just appends it to the HTML with the correct indentation
             if child.tag == "":
                 self.html += f"{(depth+1)*tab}{child.content} {new_line}"
+            # if the child is a tag, then it recursively traverses it too
             else:
                 self._traverse_tree(child, depth+1)
-        
+        # after the children it closes the tag
         self.html += f"{depth*tab}</{node.tag}>{new_line}"
 
 
