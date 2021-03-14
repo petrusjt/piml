@@ -1,5 +1,9 @@
 # PIML
 
+## Update
+
+Now there is a [chrome extension](https://github.com/petrusjt/piml-chrome-extension) available for directly opening .piml files in chrome.
+
 ## Description
 Converts a python-like indented text to html.
 
