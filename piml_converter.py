@@ -1,7 +1,7 @@
 from math import gcd
 
 from htmltree import HTMLTree, HTMLNode
-from helpers import GCD, isTagLine, createNodeFromLine, getFileLines
+from helpers import GCD, isTagLine, createNodeFromTagLine, getFileLines
 
 class PIMLConverter:
     """Handles the parsing of .piml files"""
@@ -27,17 +27,17 @@ class PIMLConverter:
                 self.handleNonTagLine(pair)
 
     def handleTagLine(self, pair):
-        line = pair[1][:-1]
+        line = pair[1]
 
         if pair[0] == self.currentIndentation:
             self.currentIndentation += 1
-            self.htmlTree.add(createNodeFromLine(line))
+            self.htmlTree.add(createNodeFromTagLine(line))
             self.htmlTree.goDown()
         elif pair[0] < self.currentIndentation:
             for _ in range(self.currentIndentation - pair[0]):
                 self.htmlTree.goUp()
 
-            self.htmlTree.add(createNodeFromLine(line))
+            self.htmlTree.add(createNodeFromTagLine(line))
             self.htmlTree.goDown()
             self.currentIndentation = pair[0] + 1
 

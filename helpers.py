@@ -8,6 +8,7 @@ def GCD(numbers : list):
 
     Since gcd(a, b, c, d) = gcd(a, gcd(b, gcd(c, d)))
     """
+
     numbers = sorted(numbers)
 
     if len(numbers) == 0:
@@ -25,12 +26,18 @@ def GCD(numbers : list):
 
 def isTagLine(line):
     """Determines whether the given line is a tag"""
+
     return len(line) >= 2 and line[-1] == ":" and line[-2:] != "\\:"
 
-def createNodeFromLine(line : str):
+def createNodeFromTagLine(line : str):
     """Creates a node from the given line"""
+
+    isInline = line[-2:] == "::"
+
+    line = line[:-2] if isInline else line[:-1]
+
     tag_and_attributes = line.split()
-    return HTMLNode(tag_and_attributes[0], tag_and_attributes[1:])
+    return HTMLNode(tag_and_attributes[0], tag_and_attributes[1:], inline=isInline)
 
 def getFileLines(fileName : str):
     return [str(line).rstrip() for line in io.open(fileName, "r", encoding="UTF-8").readlines()]

@@ -1,12 +1,13 @@
 
 
 class HTMLNode:
-    def __init__(self, tag="", attributes=(), content=""):
+    def __init__(self, tag="", attributes=(), content="", inline=False):
         self.tag = tag
         self.attributes = attributes
         self.children = []
         self.content = content
         self.parent = None
+        self.inline = inline
     
     def addChild(self, child):
         self.children.append(child)
@@ -25,8 +26,14 @@ class HTMLNode:
             return self.children[-1]
         return None
 
+    def getChildren(self):
+        return self.children
+
     def getParent(self):
         return self.parent
+    
+    def isInline(self):
+        return self.inline
         
 
 
@@ -45,26 +52,35 @@ class HTMLTree:
     def goUp(self):
         self.currentNode = self.currentNode.getParent()
 
-    """
-    Creates HTML based on the content of the tree
-
-    Param formatted: Whether the HTML should be formatted
-
-    Returns str object with the html code
-    """
     def createHtml(self):
+        """
+        Creates HTML based on the content of the tree
+
+        Returns str object with the html code
+        """
         self.hmtl = ""
         self._traverseTree(self.root.getFirstChild()) # not self.root, because self.root is an empty HTMLNode
         return self.html
 
-    def _traverseTree(self, node, depth=0): # depth is needed for proper indentation
-        # These are needed because python complained about escape sequences in interpolated strings
-        newLine = "\n"
-        tab = "\t"
+    def _traverseTree(self, node, depth=0): 
+        self._createOpeningTag(node, depth)
+        self._handleChildren(node.getChildren(), depth)
+        self._addClosingTag(node, depth)
 
-        # first it creates the html tag
-        self.html += f"{depth*tab}<{node.tag}{' ' if len(node.attributes) > 0 else ''}"
-        # then adds all the attributes to it
+    def _createOpeningTag(self, node, depth):
+        self._appendOpeningTag(node, depth)
+        self._addAttributesToOpeningTag(node)
+        self._closeOpeningTag(node)
+
+    def _appendOpeningTag(self, node, depth):
+        tab = "\t"
+        self.html += f"{depth*tab if not node.getParent().isInline() else ''}<{node.tag}{' ' if len(node.attributes) > 0 else ''}"
+
+    def _closeOpeningTag(self, node):
+        newLine = "\n"
+        self.html += f">{newLine if not node.isInline() else ''}"
+
+    def _addAttributesToOpeningTag(self, node):
         for attribute in node.attributes:
             if attribute[0] == ".":
                 self.html += f'class="{attribute[1:]}" '
@@ -72,18 +88,22 @@ class HTMLTree:
                 self.html += f'id="{attribute[1:]}" '
             else:
                 self.html += attribute + " "
-        self.html += f">{newLine}"
 
-        # After the attributes it goes over all the children of a given node
-        for child in node.children:
-            # if the child is not a tag, just appends it to the HTML with the correct indentation
+    def _addClosingTag(self, node, depth):
+        tab = "\t"
+        newLine = "\n"
+        self.html += f"{depth*tab if not node.isInline() else ''}</{node.tag}>{newLine if not node.getParent().isInline() else ''}"
+
+    def _handleChildren(self, children, depth):
+        tab = "\t"
+        newLine = "\n"
+        for child in children:
             if child.tag == "":
-                self.html += f"{(depth+1)*tab}{child.content} {newLine}"
-            # if the child is a tag, then it recursively traverses it too
+                self.html += f"{(depth+1)*tab if (not child.getParent().isInline()) and (not child.isInline()) else ''}{child.content} {newLine if not child.getParent().isInline() else ''}"
             else:
                 self._traverseTree(child, depth+1)
-        # after the children it closes the tag
-        self.html += f"{depth*tab}</{node.tag}>{newLine}"
+
+    
 
 
 
