@@ -14,7 +14,6 @@ if __name__ == "__main__":
         exit(0)
 
     pimlConverter = PIMLConverter()
-
     pimlConverter.parse(argv[1])
 
     if len(argv) == 2:
